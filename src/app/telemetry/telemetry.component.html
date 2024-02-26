@@ -1,0 +1,49 @@
+<div>
+  <table mat-table [dataSource]="telemetryData$" class="mat-elevation-z8">
+    <!-- Timestamp Column -->
+    <ng-container matColumnDef="timestamp">
+      <th mat-header-cell *matHeaderCellDef> Timestamp </th>
+      <td mat-cell *matCellDef="let data"> {{ data.timeStamp | date :'YYYY/MM/dd hh:mm:ss' }} </td>
+    </ng-container>
+
+    <!-- Car ID Column -->
+    <ng-container matColumnDef="carId">
+      <th mat-header-cell *matHeaderCellDef> Car ID </th>
+      <td mat-cell *matCellDef="let data"> {{ data.carId }} </td>
+    </ng-container>
+
+    <!-- Pressure Column -->
+    <ng-container matColumnDef="pressure">
+      <th mat-header-cell *matHeaderCellDef> Pressure </th>
+      <td mat-cell *matCellDef="let data"> {{ data.pressure | number }} </td>
+    </ng-container>
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="position">
+      <th mat-header-cell *matHeaderCellDef> Position </th>
+      <td mat-cell *matCellDef="let data"> {{ data.position }} </td>
+    </ng-container>
+
+    <!-- Temperature Column -->
+    <ng-container matColumnDef="temperature">
+      <th mat-header-cell *matHeaderCellDef> Temperature </th>
+      <td mat-cell *matCellDef="let data"> {{ data.temperature | number }} </td>
+    </ng-container>
+
+    <!-- Angular Velocity Column -->
+    <ng-container matColumnDef="omega">
+      <th mat-header-cell *matHeaderCellDef> Omega </th>
+      <td mat-cell *matCellDef="let data"> {{ data.omega | number }} </td>
+    </ng-container>
+
+    <!-- Speed Column -->
+    <ng-container matColumnDef="speed">
+      <th mat-header-cell *matHeaderCellDef> Speed </th>
+      <td mat-cell *matCellDef="let data"> {{ data.speed | number }} </td>
+    </ng-container>
+
+    <!-- Define columns to display -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
