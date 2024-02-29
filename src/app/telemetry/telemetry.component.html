@@ -1,45 +1,74 @@
 <div>
-  <table mat-table [dataSource]="telemetryData$" class="mat-elevation-z8">
+  <mat-form-field>
+    <mat-label>Select car</mat-label>
+    <mat-select placeholder="Select Cars" [value]="selectedCarIds" (selectionChange)="onCarsSelected($event)" multiple>
+      <mat-option *ngFor="let carId of carIds" [value]="carId">
+        {{ carId }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <table mat-table [dataSource]="telemetryMeasurements$" class="mat-elevation-z8">
     <!-- Timestamp Column -->
     <ng-container matColumnDef="timestamp">
       <th mat-header-cell *matHeaderCellDef> Timestamp </th>
-      <td mat-cell *matCellDef="let data"> {{ data.timeStamp | date :'YYYY/MM/dd hh:mm:ss' }} </td>
+      <td mat-cell *matCellDef="let data"> {{ data[0].timestamp | date :'YYYY/MM/dd hh:mm:ss' }} </td>
     </ng-container>
 
     <!-- Car ID Column -->
     <ng-container matColumnDef="carId">
       <th mat-header-cell *matHeaderCellDef> Car ID </th>
-      <td mat-cell *matCellDef="let data"> {{ data.carId }} </td>
-    </ng-container>
-
-    <!-- Pressure Column -->
-    <ng-container matColumnDef="pressure">
-      <th mat-header-cell *matHeaderCellDef> Pressure </th>
-      <td mat-cell *matCellDef="let data"> {{ data.pressure | number }} </td>
+      <td mat-cell *matCellDef="let data"> {{ data[0].carId }} </td>
     </ng-container>
 
     <!-- Position Column -->
     <ng-container matColumnDef="position">
       <th mat-header-cell *matHeaderCellDef> Position </th>
-      <td mat-cell *matCellDef="let data"> {{ data.position }} </td>
+      <td mat-cell *matCellDef="let data">
+        <ng-container *ngFor="let measurement of data">
+          {{ measurement.position }}<br>
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <!-- Pressure Column -->
+    <ng-container matColumnDef="pressure">
+      <th mat-header-cell *matHeaderCellDef> Pressure </th>
+      <td mat-cell *matCellDef="let data">
+        <ng-container *ngFor="let measurement of data">
+          {{ measurement.pressure | number }}<br>
+        </ng-container>
+      </td>
     </ng-container>
 
     <!-- Temperature Column -->
     <ng-container matColumnDef="temperature">
       <th mat-header-cell *matHeaderCellDef> Temperature </th>
-      <td mat-cell *matCellDef="let data"> {{ data.temperature | number }} </td>
+      <td mat-cell *matCellDef="let data">
+        <ng-container *ngFor="let measurement of data">
+          {{ measurement.temperature | number }}<br>
+        </ng-container>
+      </td>
     </ng-container>
 
     <!-- Angular Velocity Column -->
     <ng-container matColumnDef="omega">
       <th mat-header-cell *matHeaderCellDef> Omega </th>
-      <td mat-cell *matCellDef="let data"> {{ data.omega | number }} </td>
+      <td mat-cell *matCellDef="let data">
+        <ng-container *ngFor="let measurement of data">
+          {{ measurement.omega | number }}<br>
+        </ng-container>
+      </td>
     </ng-container>
 
     <!-- Speed Column -->
     <ng-container matColumnDef="speed">
       <th mat-header-cell *matHeaderCellDef> Speed </th>
-      <td mat-cell *matCellDef="let data"> {{ data.speed | number }} </td>
+      <td mat-cell *matCellDef="let data">
+        <ng-container *ngFor="let measurement of data">
+          {{ measurement.speed | number }}<br>
+        </ng-container>
+      </td>
     </ng-container>
 
     <!-- Define columns to display -->
