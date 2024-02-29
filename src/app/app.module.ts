@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppRoutingModule } from './app-routing.module';
@@ -16,7 +16,7 @@ import { TelemetryComponent } from './telemetry/telemetry.component';
     BrowserModule,
     CommonModule,
     AppRoutingModule,
-    MatTableModule
+    HttpClientModule
   ],
   providers: [
     provideAnimationsAsync()

@@ -1,92 +1,167 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject, interval } from 'rxjs';
-import { IMeasurement, ITyrePosition } from '../models/measurement';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, Subject, filter, interval, map, switchMap, take, takeUntil, takeWhile } from 'rxjs';
+import { IMeasurement, Measurements } from '../models/measurement';
+
+/**
+ * Type for grouped measurements by timestamp for each carId
+ */
+type GroupedMeasurements = { [carId: string]: { [timestamp: string]: IMeasurement[] } };
 
 @Injectable({
   providedIn: 'root'
 })
-export class TelemetryService {
+export class TelemetryService implements OnDestroy {
   /**
-   * Path to the CSV file containing telemetry data
+   * Path to the CSV file containing measurements data
    */
   private readonly _csvPath = 'assets/data_measurements_finals.csv';
   /**
-   * Subject used to emit telemetry data updates to subscribers
+   * Datasource dictionary storing measurements data grouped by carId
    */
-  private readonly _telemetryUpdate$: Subject<IMeasurement[]> = new Subject<IMeasurement[]>();
+  private _datasource: { [carId: string]: IMeasurement[][] } = {};
   /**
-   * Index of the current line being read from the CSV data source
+   * Subject to notify when datasource is loaded
    */
-  private _currentLine = 0;
+  private _datasourceLoaded$ = new BehaviorSubject<boolean>(false);
   /**
-   * Datasource containing telemetry data parsed from the CSV file
+   * Subject to signal the destruction of the service
    */
-  private _datasource: string[] = [];
+  private _destroy$ = new Subject<void>();
 
-  constructor() {
-    this.initDatasource()
-      .then(() => this.simulateRealTimeUpdates());
+  constructor(private _httpClient: HttpClient) {
+    this.initDatasource();
+  }
+
+  public ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.unsubscribe();
+  }
+
+  /**
+   * Get available carIds
+   */
+  public getCarIds(): Promise<string[]> {
+    return new Promise(resolve => {
+      this._datasourceLoaded$
+        .pipe(
+          takeUntil(this._destroy$),
+          filter(isLoaded => isLoaded),
+          take(1),
+        ).subscribe(() => {
+          // Simulate delay for server response
+          setTimeout(() => resolve(Object.keys(this._datasource)), 1000);
+        });
+    });
   }
 
   /**
    * Provide telemetry updates as an Observable
    */
-  public getTelemetryUpdates(): Observable<IMeasurement[]> {
-    return this._telemetryUpdate$.asObservable();
+  public getTelemetryUpdates(carIds: string[]): Observable<Measurements> {
+    return this._datasourceLoaded$
+      .pipe(
+        takeUntil(this._destroy$),
+        filter(isLoaded => isLoaded),
+        take(1),
+        switchMap(() => {
+          return interval(5000)
+            .pipe(
+              takeUntil(this._destroy$),
+              map(index => this.fetchData(index, carIds)),
+              takeWhile(measurements => Object.keys(measurements).length > 0)
+            );
+        })
+      );
   }
 
   /**
    * Initialize the data source by fetching CSV
    */
-  private async initDatasource(): Promise<void> {
-    const response = await fetch(this._csvPath);
-    const csvData = await response.text();
-    this._datasource = csvData.split('\n');
+  private initDatasource(): void {
+    this._httpClient.get(this._csvPath, { responseType: 'text' })
+      .subscribe(csvData => {
+        const rows = csvData?.split('\n');
+        // remove header row
+        rows?.shift();
 
-    // remove header line
-    this._datasource.shift();
+        const groupedDatasource = this.processRawDatasource(rows);
+        this.sortGroupedDatasource(groupedDatasource);
+        this._datasourceLoaded$.next(true);
+      });
   }
 
   /**
-   * Simulate real-time updates by reading data from CSV every 60 seconds
+   * Processes raw datasource rows
    */
-  private simulateRealTimeUpdates(): void {
-    interval(5000).subscribe(() => {
-      const newData = this.fetchData();
-      this._telemetryUpdate$.next(newData);
+  private processRawDatasource(rows: string[]): GroupedMeasurements {
+    const startTime = new Date().getTime();
+    console.log('%cstart processing raw datasource...', 'color: green');
+
+    const groupedDatasource: GroupedMeasurements = {};
+    rows?.forEach(row => {
+      const [, rawTimestamp, pressure, position, temperature, omega, speed, carId] = row.split(',');
+      if (carId) {
+        const measurement: IMeasurement = {
+          timestamp: new Date(rawTimestamp),
+          pressure: parseFloat(pressure),
+          position,
+          // position: TyrePosition[position as keyof typeof TyrePosition],
+          temperature: parseFloat(temperature),
+          omega: parseFloat(omega),
+          speed: parseFloat(speed),
+          carId
+        };
+
+        groupedDatasource[carId] = groupedDatasource[carId] || {};
+        groupedDatasource[carId][rawTimestamp] = groupedDatasource[carId][rawTimestamp] || [];
+        groupedDatasource[carId][rawTimestamp].push(measurement);
+      }
     });
+
+    const endTime = new Date().getTime();
+    console.log(`%cend processing raw datasource ${endTime - startTime}ms`, 'color: green');
+
+    return groupedDatasource;
+  }
+
+  /**
+   * Sorts the grouped datasource by timestamp for each carId
+   */
+  private sortGroupedDatasource(groupedDatasource: GroupedMeasurements): void {
+    const startTime = new Date().getTime();
+    console.log('%cstart sorting grouped datasource...', 'color: green');
+
+    this._datasource = {};
+    for (const carId in groupedDatasource) {
+      const carMeasurements = groupedDatasource[carId];
+      const measurements: IMeasurement[][] = [];
+      for (const timestamp in carMeasurements) {
+        measurements.push(carMeasurements[timestamp]);
+      }
+      measurements.sort((a, b) => a[0].timestamp.getTime() - b[0].timestamp.getTime());
+      this._datasource[carId] = measurements;
+    }
+
+    const endTime = new Date().getTime();
+    console.log(`%cend sorting grouped datasource ${endTime - startTime}ms`, 'color: green');
   }
 
   /**
    * Feath data
    */
-  private fetchData(): IMeasurement[] {
-    const telemetryData = [];
-    const lineToRead = 4;
+  private fetchData(index: number, carIds: string[]): Measurements {
+    const measurements: Measurements = {};
 
-    for (let i = 0; i < lineToRead; i++) {
-      const lineIndex = this._currentLine + i;
-      const line = this._datasource[lineIndex];
-      if (line) {
-        const values = line.split(',');
-        const data: IMeasurement = {
-          timeStamp: new Date(values[1]),
-          pressure: parseFloat(values[2]),
-          position: ITyrePosition[values[3] as keyof typeof ITyrePosition],
-          temperature: parseFloat(values[4]),
-          omega: parseFloat(values[5]),
-          speed: parseFloat(values[6]),
-          carId: values[7]
-        };
-        telemetryData.push(data);
+    carIds?.forEach(carId => {
+      const carMeasurements = this._datasource[carId];
+      const currentMeasurements = carMeasurements?.[index];
+      if (currentMeasurements) {
+        measurements[carId] = currentMeasurements.filter(m => m.pressure > 0 && m.omega > 0);
       }
-    }
+    });
 
-    this._currentLine = (this._currentLine + lineToRead) >= this._datasource.length
-      ? 0
-      : this._currentLine + lineToRead;
-
-    return telemetryData;
+    return measurements;
   }
 
 }
