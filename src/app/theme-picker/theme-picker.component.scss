@@ -1,0 +1,76 @@
+$theme-icon-padding-left: 10px;
+$deeppurple-amber-background: #fafafa;
+$deeppurple-amber-button: #ffc107;
+$deeppurple-amber-toolbar: #673ab7;
+$indigo-pink-background: #fafafa;
+$indigo-pink-button: #e91e63;
+$indigo-pink-toolbar: #3f51b5;
+$pink-bluegrey-background: #303030;
+$pink-bluegrey-button: #607d8b;
+$pink-bluegrey-toolbar: #e91e63;
+$purple-green-background: #303030;
+$purple-green-button: #4caf50;
+$purple-green-toolbar: #9c27b0;
+
+::ng-deep .theme-picker .mat-icon.theme-example {
+  margin-right: 0;
+  margin-left: auto;
+  padding-left: $theme-icon-padding-left;
+  order: 1;
+
+  &.deeppurple-amber>svg {
+    .docs-theme-icon-background {
+      fill: $deeppurple-amber-background;
+    }
+
+    .docs-theme-icon-button {
+      fill: $deeppurple-amber-button;
+    }
+
+    .docs-theme-icon-toolbar {
+      fill: $deeppurple-amber-toolbar;
+    }
+  }
+
+  &.indigo-pink>svg {
+    .docs-theme-icon-background {
+      fill: $indigo-pink-background;
+    }
+
+    .docs-theme-icon-button {
+      fill: $indigo-pink-button;
+    }
+
+    .docs-theme-icon-toolbar {
+      fill: $indigo-pink-toolbar;
+    }
+  }
+
+  &.pink-bluegrey>svg {
+    .docs-theme-icon-background {
+      fill: $pink-bluegrey-background;
+    }
+
+    .docs-theme-icon-button {
+      fill: $pink-bluegrey-button;
+    }
+
+    .docs-theme-icon-toolbar {
+      fill: $pink-bluegrey-toolbar;
+    }
+  }
+
+  &.purple-green>svg {
+    .docs-theme-icon-background {
+      fill: $purple-green-background;
+    }
+
+    .docs-theme-icon-button {
+      fill: $purple-green-button;
+    }
+
+    .docs-theme-icon-toolbar {
+      fill: $purple-green-toolbar;
+    }
+  }
+}

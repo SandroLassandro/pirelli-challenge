@@ -1,6 +1,7 @@
 <div>
+  <app-theme-picker></app-theme-picker>
   <mat-form-field>
-    <mat-label>Select car</mat-label>
+    <mat-label>Cars</mat-label>
     <mat-select placeholder="Select Cars" [value]="selectedCarIds" (selectionChange)="onCarsSelected($event)" multiple>
       <mat-option *ngFor="let carId of carIds" [value]="carId">
         {{ carId }}
@@ -76,3 +77,5 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
+
+<app-spinner *ngIf="isLoading" mode="indeterminate"></app-spinner>

@@ -15,6 +15,10 @@ export class TelemetryComponent implements OnInit {
    */
   public readonly displayedColumns: (keyof IMeasurement)[] = ['timestamp', 'carId', 'position', 'pressure', 'temperature', 'omega', 'speed'];
   /**
+   * Indicates whether the component is currently loading data
+   */
+  public isLoading = false;
+  /**
    * List of available car Ids
    */
   public carIds: string[] = [];
@@ -38,7 +42,9 @@ export class TelemetryComponent implements OnInit {
   constructor(private _telemetryService: TelemetryService) { }
 
   public async ngOnInit(): Promise<void> {
+    this.isLoading = true;
     this.carIds = await this._telemetryService.getCarIds();
+    this.isLoading = false;
   }
 
   /**
