@@ -2,13 +2,23 @@
 
 :host {
   .container {
-    position: absolute;
+    position: static;
+    display: flex;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: to-vh(30) to-vw(30);
+    flex-direction: column;
+
+    .title {
+      flex: 1;
+    }
+
+    .content {
+      flex: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: to-vh(30) to-vw(30);
+    }
   }
 }
