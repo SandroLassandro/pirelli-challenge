@@ -1,0 +1,25 @@
+<div class="table-container">
+  <table class="mat-elevation-z8" mat-table [dataSource]="dataSource" matSort>
+    <ng-container *ngFor="let column of columns" [matColumnDef]="column.name" [sticky]="column.isSticky">
+      <th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.name" [disabled]="!column.isSortable"
+        [sortActionDescription]="'Sort by ' + (column.caption ?? column.name)">
+        {{ column.caption ?? column.name | titlecase }}
+      </th>
+      <td mat-cell *matCellDef="let data; let rowIndex = index" [attr.rowspan]="rowSpans[rowIndex]?.[column.name]"
+        [style.display]="!column.enableRowspan || rowSpans[rowIndex]?.[column.name] ? '' : 'none'">
+        <ng-container *ngIf="column.templateRef; else defaulColumn">
+          <ng-container [ngTemplateOutlet]="column.templateRef" [ngTemplateOutletContext]="{ value: data }">
+          </ng-container>
+        </ng-container>
+        <ng-template #defaulColumn>{{ data[column.name] }}</ng-template>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator *ngIf="pageSize" [pageSize]="pageSize" [hidePageSize]="true" aria-label="Select page"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>
