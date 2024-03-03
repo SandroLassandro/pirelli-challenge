@@ -1,0 +1,22 @@
+@use "sass:math";
+
+// Apply opacity to a color
+@function color-opacity($color, $opacity) {
+  @return rgba($color, $opacity);
+}
+
+// Transform pixel value to VW
+@function to-vw($value) {
+  $vw_reference: 1920;
+  $vw_ratio: math.div($value, $vw_reference) * 100;
+  $vw_rounded_ratio: math.div(round($vw_ratio * 1000), 1000);
+  @return #{$vw_rounded_ratio}vw;
+}
+
+// Transform pixel value to VH
+@function to-vh($value) {
+  $vh_reference: 1080;
+  $vh_ratio: math.div($value, $vh_reference) * 100;
+  $vh_rounded_ratio: math.div(round($vh_ratio * 1000), 1000);
+  @return #{$vh_rounded_ratio}vh;
+}
