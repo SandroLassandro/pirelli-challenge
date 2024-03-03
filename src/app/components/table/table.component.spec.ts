@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppModule } from '../app.module';
-import { ThemePickerComponent } from './theme-picker.component';
+import { AppModule } from '../../app.module';
+import { TableComponent } from './table.component';
 
-describe('ThemePickerComponent', () => {
-  let component: ThemePickerComponent;
-  let fixture: ComponentFixture<ThemePickerComponent>;
+describe('TableComponent', () => {
+  let component: TableComponent<any>;
+  let fixture: ComponentFixture<TableComponent<any>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -12,7 +12,7 @@ describe('ThemePickerComponent', () => {
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(ThemePickerComponent);
+    fixture = TestBed.createComponent(TableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

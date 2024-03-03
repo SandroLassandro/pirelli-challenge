@@ -4,8 +4,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import _ from 'lodash';
 import { Observable, Subscription } from 'rxjs';
-import { TableColumnDirective } from '../directives/table-column.directive';
-import { ITableColumn } from '../models/table';
+import { TableColumnDirective } from '../../directives/table-column.directive';
+import { ITableColumn } from '../../models/table';
 
 @Component({
   selector: 'app-table',

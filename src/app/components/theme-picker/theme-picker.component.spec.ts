@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppModule } from '../app.module';
-import { SpinnerComponent } from './spinner.component';
+import { AppModule } from '../../app.module';
+import { ThemePickerComponent } from './theme-picker.component';
 
-describe('SpinnerComponent', () => {
-  let component: SpinnerComponent;
-  let fixture: ComponentFixture<SpinnerComponent>;
+describe('ThemePickerComponent', () => {
+  let component: ThemePickerComponent;
+  let fixture: ComponentFixture<ThemePickerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -12,7 +12,7 @@ describe('SpinnerComponent', () => {
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(SpinnerComponent);
+    fixture = TestBed.createComponent(ThemePickerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

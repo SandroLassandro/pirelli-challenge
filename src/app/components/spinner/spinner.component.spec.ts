@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppModule } from '../app.module';
-import { TableComponent } from './table.component';
+import { AppModule } from '../../app.module';
+import { SpinnerComponent } from './spinner.component';
 
-describe('TableComponent', () => {
-  let component: TableComponent<any>;
-  let fixture: ComponentFixture<TableComponent<any>>;
+describe('SpinnerComponent', () => {
+  let component: SpinnerComponent;
+  let fixture: ComponentFixture<SpinnerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -12,7 +12,7 @@ describe('TableComponent', () => {
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(TableComponent);
+    fixture = TestBed.createComponent(SpinnerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
