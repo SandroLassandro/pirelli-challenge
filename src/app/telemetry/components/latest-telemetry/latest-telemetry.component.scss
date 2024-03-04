@@ -1,0 +1,26 @@
+@import './../../../../styles/functions';
+
+$table-padding-bottom: to-vh(20);
+$app-table-width-media-query: 1600px;
+
+:host {
+  .position-grouped-table {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    overflow: auto;
+
+    app-table {
+      display: inline-block;
+      width: 100%;
+      padding-bottom: $table-padding-bottom;
+
+      @media screen and (min-width: $app-table-width-media-query) {
+        width: 45%;
+      }
+    }
+  }
+}

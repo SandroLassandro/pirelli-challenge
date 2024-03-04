@@ -1,0 +1,30 @@
+<div class="position-grouped-table">
+  <ng-container *ngFor="let item of measurementsByPosition">
+    <ng-container *ngTemplateOutlet="tableTmpl, context: { data: item }">
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #tableTmpl let-data="data">
+  <app-table [data]="data" [columns]="columns">
+    <ng-template tableColumn="timestamp" let-value="value">
+      {{ value.timestamp | date :'YYYY/MM/dd hh:mm:ss' }}
+    </ng-template>
+
+    <ng-template tableColumn="pressure" let-value="value">
+      {{ value.pressure | number }}<br>
+    </ng-template>
+
+    <ng-template tableColumn="temperature" let-value="value">
+      {{ value.temperature | number }}<br>
+    </ng-template>
+
+    <ng-template tableColumn="omega" let-value="value">
+      {{ value.omega | number }}<br>
+    </ng-template>
+
+    <ng-template tableColumn="speed" let-value="value">
+      {{ value.speed | number }}<br>
+    </ng-template>
+  </app-table>
+</ng-template>
