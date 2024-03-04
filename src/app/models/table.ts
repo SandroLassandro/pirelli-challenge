@@ -21,6 +21,10 @@ export interface ITableColumn<T> {
    */
   templateRef?: TemplateRef<any>;
   /**
+   * Reference to the custom footer column template
+   */
+  templateFooterRef?: TemplateRef<any>;
+  /**
    * Specifies whether the column is sortable
    */
   isSortable?: boolean;

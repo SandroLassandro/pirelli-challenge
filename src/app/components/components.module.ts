@@ -9,6 +9,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TableColumnDirective } from '../directives/table-column.directive';
+import { TableFooterColumnDirective } from '../directives/table-footer-column.directive';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { TableComponent } from './table/table.component';
 import { ThemePickerComponent } from './theme-picker/theme-picker.component';
@@ -18,7 +19,8 @@ import { ThemePickerComponent } from './theme-picker/theme-picker.component';
     SpinnerComponent,
     ThemePickerComponent,
     TableComponent,
-    TableColumnDirective
+    TableColumnDirective,
+    TableFooterColumnDirective
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import { ThemePickerComponent } from './theme-picker/theme-picker.component';
     SpinnerComponent,
     ThemePickerComponent,
     TableComponent,
-    TableColumnDirective
+    TableColumnDirective,
+    TableFooterColumnDirective
   ]
 })
 export class ComponentsModule { }

@@ -1,10 +1,11 @@
-import { AfterContentInit, AfterViewInit, Component, ContentChildren, Input, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ContentChildren, Input, OnChanges, OnDestroy, QueryList, SimpleChanges, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import _ from 'lodash';
 import { Observable, Subscription } from 'rxjs';
 import { TableColumnDirective } from '../../directives/table-column.directive';
+import { TableFooterColumnDirective } from '../../directives/table-footer-column.directive';
 import { ITableColumn } from '../../models/table';
 
 @Component({
@@ -12,7 +13,7 @@ import { ITableColumn } from '../../models/table';
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
 })
-export class TableComponent<T> implements OnInit, OnChanges, AfterContentInit, AfterViewInit, OnDestroy {
+export class TableComponent<T> implements OnChanges, AfterContentInit, AfterViewInit, OnDestroy {
   /**
    * Data to be displayed
    */
@@ -26,9 +27,17 @@ export class TableComponent<T> implements OnInit, OnChanges, AfterContentInit, A
    */
   @Input() public pageSize!: number;
   /**
+   * Specifies whether the table has a footer
+   */
+  @Input() public hasFooter!: boolean;
+  /**
    * Custom column templates
    */
   @ContentChildren(TableColumnDirective) public tableColumnsTemplateRef!: QueryList<TableColumnDirective>;
+  /**
+   * Custom footer column templates
+   */
+  @ContentChildren(TableFooterColumnDirective) public tableFooterColumnsTemplateRef!: QueryList<TableFooterColumnDirective>;
   /**
    * Table data source
    */
@@ -64,18 +73,17 @@ export class TableComponent<T> implements OnInit, OnChanges, AfterContentInit, A
 
   constructor() { }
 
-  public ngOnInit(): void {
-    this.displayedColumns = this.columns?.map(column => column?.name);
-  }
-
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
       this.setupDataSource();
     }
+    if (changes['columns']) {
+      this.displayedColumns = this.columns?.map(column => column?.name);
+    }
   }
 
   public ngAfterContentInit(): void {
-    this.setupCustomColumns();
+    this.setupCustomColumnTemplates();
   }
 
   public ngAfterViewInit(): void {
@@ -102,21 +110,24 @@ export class TableComponent<T> implements OnInit, OnChanges, AfterContentInit, A
     }
 
     this.setupSortingAndPagination();
-
-    this._subscriptions.push(
-      this.dataSource.connect().subscribe(data => this._renderData = data)
-    );
   }
 
   /**
    * Setup custom column templates
    */
-  private setupCustomColumns() {
+  private setupCustomColumnTemplates() {
     this.tableColumnsTemplateRef
       ?.forEach(template => {
         this.columns
           ?.filter(col => col?.templateName === template.name && !col.templateRef)
           .forEach(column => column.templateRef = template.templateRef);
+      });
+
+    this.tableFooterColumnsTemplateRef
+      ?.forEach(template => {
+        this.columns
+          ?.filter(col => col?.templateName === template.name && !col.templateFooterRef)
+          .forEach(column => column.templateFooterRef = template.templateRef);
       });
   }
 
@@ -154,6 +165,10 @@ export class TableComponent<T> implements OnInit, OnChanges, AfterContentInit, A
    */
   private updateDataSource(data: T[]) {
     this.dataSource.data = data;
+    this._subscriptions.push(
+      this.dataSource.connect().subscribe(data => this._renderData = data)
+    );
+
     this.calculateRowSpan();
     this._table?.renderRows();
   }
@@ -167,7 +182,7 @@ export class TableComponent<T> implements OnInit, OnChanges, AfterContentInit, A
 
     columns.forEach(column => {
       const columnName = column.name;
-      for (let i = 0; i < this._renderData.length; i++) {
+      for (let i = 0; i < this._renderData?.length; i++) {
         const row = this._renderData[i];
         let prevValue = row[columnName];
         let count = 1;

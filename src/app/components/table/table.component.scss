@@ -1,5 +1,23 @@
 :host {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
   .table-container {
+    flex: 1 1 auto;
     overflow: auto;
+
+    td.mat-mdc-cell.hidden {
+      display: none;
+    }
+
+    tr.mat-mdc-footer-row {
+      font-weight: bold;
+    }
+  }
+
+  .mat-mdc-paginator {
+    position: sticky;
+    bottom: 0;
   }
 }
