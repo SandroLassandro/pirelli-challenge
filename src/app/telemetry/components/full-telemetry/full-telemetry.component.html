@@ -1,0 +1,21 @@
+<app-table [data]="telemetryMeasurements" [columns]="columns">
+  <ng-template tableColumn="timestamp" let-value="value">
+    {{ value.timestamp | date :'YYYY/MM/dd hh:mm:ss' }}
+  </ng-template>
+
+  <ng-template tableColumn="pressure" let-value="value">
+    {{ value.pressure | number }}<br>
+  </ng-template>
+
+  <ng-template tableColumn="temperature" let-value="value">
+    {{ value.temperature | number }}<br>
+  </ng-template>
+
+  <ng-template tableColumn="omega" let-value="value">
+    {{ value.omega | number }}<br>
+  </ng-template>
+
+  <ng-template tableColumn="speed" let-value="value">
+    {{ value.speed | number }}<br>
+  </ng-template>
+</app-table>
