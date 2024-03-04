@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TelemetryComponent } from './telemetry/telemetry.component';
 
 const routes: Routes = [
-  { path: '', component: TelemetryComponent }
+  {
+    path: '',
+    loadChildren: () => import('./telemetry/telemetry.module').then(m => m.TelemetryModule)
+  }
 ];
 
 @NgModule({
