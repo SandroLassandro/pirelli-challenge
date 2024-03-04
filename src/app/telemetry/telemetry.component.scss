@@ -1,0 +1,23 @@
+@import './../../styles/functions';
+
+$tab-body-content-padding: to-vh(15) to-vw(20);
+
+:host {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+
+  .mat-mdc-tab-group {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  ::ng-deep .mat-mdc-tab-body-wrapper {
+    height: 100%;
+
+    .mat-mdc-tab-body-content {
+      padding: $tab-body-content-padding;
+      box-sizing: border-box;
+    }
+  }
+}

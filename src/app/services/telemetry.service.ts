@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, filter, interval, map, switchMap, take, takeUntil, takeWhile } from 'rxjs';
-import { IMeasurement, Measurements } from '../models/measurement';
+import { IMeasurement } from '../models/measurement';
 
 /**
  * Type for grouped measurements by timestamp for each carId
@@ -58,7 +58,7 @@ export class TelemetryService implements OnDestroy {
   /**
    * Provide telemetry updates as an Observable
    */
-  public getTelemetryUpdates(carIds: string[]): Observable<Measurements> {
+  public getTelemetryUpdates(carIds: string[]): Observable<IMeasurement[]> {
     return this._datasourceLoaded$
       .pipe(
         takeUntil(this._destroy$),
@@ -69,7 +69,7 @@ export class TelemetryService implements OnDestroy {
             .pipe(
               takeUntil(this._destroy$),
               map(index => this.fetchData(index, carIds)),
-              takeWhile(measurements => Object.keys(measurements).length > 0)
+              takeWhile(measurements => measurements.length > 0)
             );
         })
       );
@@ -95,7 +95,7 @@ export class TelemetryService implements OnDestroy {
    * Processes raw datasource rows
    */
   private processRawDatasource(rows: string[]): GroupedMeasurements {
-    const startTime = new Date().getTime();
+    const startTime = performance.now();
     console.log('%cstart processing raw datasource...', 'color: green');
 
     const groupedDatasource: GroupedMeasurements = {};
@@ -113,14 +113,14 @@ export class TelemetryService implements OnDestroy {
           carId
         };
 
-        groupedDatasource[carId] = groupedDatasource[carId] || {};
-        groupedDatasource[carId][rawTimestamp] = groupedDatasource[carId][rawTimestamp] || [];
+        groupedDatasource[carId] = groupedDatasource[carId] ?? {};
+        groupedDatasource[carId][rawTimestamp] = groupedDatasource[carId][rawTimestamp] ?? [];
         groupedDatasource[carId][rawTimestamp].push(measurement);
       }
     });
 
-    const endTime = new Date().getTime();
-    console.log(`%cend processing raw datasource ${endTime - startTime}ms`, 'color: green');
+    const endTime = performance.now();
+    console.log(`%cend processing raw datasource ${Math.round(endTime - startTime)}ms`, 'color: green');
 
     return groupedDatasource;
   }
@@ -129,7 +129,7 @@ export class TelemetryService implements OnDestroy {
    * Sorts the grouped datasource by timestamp for each carId
    */
   private sortGroupedDatasource(groupedDatasource: GroupedMeasurements): void {
-    const startTime = new Date().getTime();
+    const startTime = performance.now();
     console.log('%cstart sorting grouped datasource...', 'color: green');
 
     this._datasource = {};
@@ -143,21 +143,22 @@ export class TelemetryService implements OnDestroy {
       this._datasource[carId] = measurements;
     }
 
-    const endTime = new Date().getTime();
-    console.log(`%cend sorting grouped datasource ${endTime - startTime}ms`, 'color: green');
+    const endTime = performance.now();
+    console.log(`%cend sorting grouped datasource ${Math.round(endTime - startTime)}ms`, 'color: green');
   }
 
   /**
    * Feath data
    */
-  private fetchData(index: number, carIds: string[]): Measurements {
-    const measurements: Measurements = {};
+  private fetchData(index: number, carIds: string[]): IMeasurement[] {
+    const measurements: IMeasurement[] = [];
 
     carIds?.forEach(carId => {
       const carMeasurements = this._datasource[carId];
       const currentMeasurements = carMeasurements?.[index];
       if (currentMeasurements) {
-        measurements[carId] = currentMeasurements.filter(m => m.pressure > 0 && m.omega > 0);
+        const filteredMeasurements = currentMeasurements.filter(m => m.pressure > 0 && m.omega > 0);
+        measurements.push(...filteredMeasurements);
       }
     });
 

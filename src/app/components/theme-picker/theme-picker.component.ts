@@ -28,11 +28,11 @@ export class ThemePickerComponent implements OnInit {
     displayName: 'Indigo & Pink'
   }, {
     name: 'pink-bluegrey',
-    displayName: 'Pink & Blue-grey',
-    isDefault: true
+    displayName: 'Pink & Blue-grey'
   }, {
     name: 'purple-green',
-    displayName: 'Purple & Green'
+    displayName: 'Purple & Green',
+    isDefault: true
   }];
   /**
    * Theme example SVG path

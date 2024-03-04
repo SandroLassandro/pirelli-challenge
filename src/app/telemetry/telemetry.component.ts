@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
-import { Observable, map } from 'rxjs';
-import { IMeasurement } from '../models/measurement';
+import { FormControl, Validators } from '@angular/forms';
 import { TelemetryService } from '../services/telemetry.service';
 
 @Component({
@@ -11,61 +9,40 @@ import { TelemetryService } from '../services/telemetry.service';
 })
 export class TelemetryComponent implements OnInit {
   /**
-   * Columns to be displayed in the table
+   * Form control for selecting car Ids
    */
-  public readonly displayedColumns: (keyof IMeasurement)[] = ['timestamp', 'carId', 'position', 'pressure', 'temperature', 'omega', 'speed'];
-  /**
-   * Indicates whether the component is currently loading data
-   */
-  public isLoading = false;
+  public carIdsFormControl!: FormControl<string | null>;
   /**
    * List of available car Ids
    */
-  public carIds: string[] = [];
+  public carIds!: string[];
   /**
    * Selected car Ids
    */
-  public selectedCarIds: string[] = [];
+  public selectedCarIds!: string[];
   /**
-   * Telemetry measurements Observable
+   * Specifies whether the component is currently loading data
    */
-  public telemetryMeasurements$!: Observable<IMeasurement[][]>;
-  /**
-   * Complete telemetry measurements grouped by carId
-   */
-  private _completeTelemetryMeasurements: { [carId: string]: IMeasurement[][] } = {};
-  /**
-   * 
-   */
-  private _telemetryMeasurements: IMeasurement[][] = [];
+  public isLoading = true;
 
   constructor(private _telemetryService: TelemetryService) { }
 
-  public async ngOnInit(): Promise<void> {
-    this.isLoading = true;
-    this.carIds = await this._telemetryService.getCarIds();
-    this.isLoading = false;
+  public ngOnInit(): void {
+    this.carIdsFormControl = new FormControl<string>('', Validators.required);
+    this.setupCarIds();
   }
 
   /**
-   * Handles the selection of cars from the dropdown
+   * Setup car Ids
    */
-  public onCarsSelected({ value }: MatSelectChange) {
-    this.selectedCarIds = value;
-    this._telemetryMeasurements = [];
-    this._completeTelemetryMeasurements = {};
-    this.telemetryMeasurements$ = this._telemetryService.getTelemetryUpdates(this.selectedCarIds)
-      .pipe(
-        map(data => {
-          for (const carId in data) {
-            const carMeasurements = data[carId];
-            this._completeTelemetryMeasurements[carId] = this._completeTelemetryMeasurements[carId] || [];
-            this._completeTelemetryMeasurements[carId].push(carMeasurements);
-            this._telemetryMeasurements.push(carMeasurements);
-          }
-          return this._telemetryMeasurements;
-        }
-        ));
+  private async setupCarIds(): Promise<void> {
+    try {
+      this.carIds = await this._telemetryService.getCarIds();
+    } catch (error) {
+      console.error('Error fetching car Ids:', error);
+    } finally {
+      this.isLoading = false;
+    }
   }
 
 }

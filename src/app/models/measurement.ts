@@ -2,27 +2,32 @@
  * Telemetry measurement
  */
 export interface IMeasurement {
+  /**
+   * Timestamp
+   */
   timestamp: Date;
+  /**
+   * Pressure
+   */
   pressure: number;
+  /**
+   * Position of the tyre
+   */
   position: string;
-  // position: TyrePosition;
+  /**
+   * Temperature
+   */
   temperature: number;
+  /**
+   * Omega
+   */
   omega: number;
+  /**
+   * Speed
+   */
   speed: number;
+  /**
+   * Identifier of the car
+   */
   carId: string;
 }
-
-/**
- * Tyre position
- */
-export enum TyrePosition {
-  FrontLeft = 'Front Left',
-  RearLeft = 'Rear Left',
-  RearRight = 'Rear Right',
-  FrontRight = 'Front Right'
-}
-
-/**
- * Telemetry measurements grouped by carId
- */
-export type Measurements = { [carId: string]: IMeasurement[] };

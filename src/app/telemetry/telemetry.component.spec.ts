@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppModule } from '../app.module';
 import { TelemetryComponent } from './telemetry.component';
+import { TelemetryModule } from './telemetry.module';
 
 describe('TelemetryComponent', () => {
   let component: TelemetryComponent;
@@ -8,7 +8,7 @@ describe('TelemetryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppModule]
+      imports: [TelemetryModule]
     })
       .compileComponents();
 
