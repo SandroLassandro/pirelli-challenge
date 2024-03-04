@@ -65,7 +65,7 @@ export class TelemetryService implements OnDestroy {
         filter(isLoaded => isLoaded),
         take(1),
         switchMap(() => {
-          return interval(5000)
+          return interval(2000)
             .pipe(
               takeUntil(this._destroy$),
               map(index => this.fetchData(index, carIds)),
