@@ -1,0 +1,19 @@
+@import './../../../../styles/functions';
+
+$radio-group-margin-bottom: to-vh(10);
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+
+  mat-radio-group {
+    margin-bottom: $radio-group-margin-bottom;
+  }
+
+  app-table {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+}

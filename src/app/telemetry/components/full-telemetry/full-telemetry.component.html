@@ -1,21 +1,41 @@
-<app-table [data]="telemetryMeasurements" [columns]="columns">
+<mat-radio-group aria-label="Select an aggregation option" required [value]="aggregationType"
+  (change)="onAggregationTypeChange($event)">
+  <mat-radio-button *ngFor="let type of aggregationTypes" [value]="type">{{ type | titlecase }}</mat-radio-button>
+</mat-radio-group>
+
+<app-table [data]="telemetryMeasurements" [columns]="columns" [pageSize]="12" [hasFooter]="true">
   <ng-template tableColumn="timestamp" let-value="value">
     {{ value.timestamp | date :'YYYY/MM/dd hh:mm:ss' }}
+  </ng-template>
+  <ng-template tableFooterColumn="timestamp" let-columnName="columnName">
+    {{ aggregationType | titlecase }}:
   </ng-template>
 
   <ng-template tableColumn="pressure" let-value="value">
     {{ value.pressure | number }}<br>
   </ng-template>
+  <ng-template tableFooterColumn="pressure" let-columnName="columnName">
+    {{ aggregatedValues[columnName] | number }}
+  </ng-template>
 
   <ng-template tableColumn="temperature" let-value="value">
     {{ value.temperature | number }}<br>
+  </ng-template>
+  <ng-template tableFooterColumn="temperature" let-columnName="columnName">
+    {{ aggregatedValues[columnName] | number }}
   </ng-template>
 
   <ng-template tableColumn="omega" let-value="value">
     {{ value.omega | number }}<br>
   </ng-template>
+  <ng-template tableFooterColumn="omega" let-columnName="columnName">
+    {{ aggregatedValues[columnName] | number }}
+  </ng-template>
 
   <ng-template tableColumn="speed" let-value="value">
     {{ value.speed | number }}<br>
+  </ng-template>
+  <ng-template tableFooterColumn="speed" let-columnName="columnName">
+    {{ aggregatedValues[columnName] | number }}
   </ng-template>
 </app-table>
